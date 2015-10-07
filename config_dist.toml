@@ -1,0 +1,3 @@
+Name = "your_twitch_username"
+Password = "oauth:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+Server = "irc.twitch.tv:6667"
