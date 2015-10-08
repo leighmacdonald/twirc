@@ -1,0 +1,401 @@
+{
+  "success": true,
+  "rgInventory": {
+    "4070783100": {
+      "id": "4070783100",
+      "classid": "92538067",
+      "instanceid": "1235869224",
+      "amount": "1",
+      "pos": 1457
+    },
+    "3146313024": {
+      "id": "3146313024",
+      "classid": "42266450",
+      "instanceid": "0",
+      "amount": "1",
+      "pos": 1499
+    }
+  },
+  "rgCurrency": [],
+  "rgDescriptions": {
+    "780612188_11563708": {
+      "appid": "440",
+      "classid": "780612188",
+      "instanceid": "11563708",
+      "icon_url": "fWFc82js0fmoRAP-qOIPu5THSWqfSmTELLqcUywGkijVjZULUrsm1j-9xgEGegouXxrmvz18jcbhFM2ACfIHnpRs4MMCjmQ4xFIuZOXhZmFhJgCQB_lbBKJt8V24UX9n68M6Bo7vruNXZ0yx405HZrGJ",
+      "icon_url_large": "fWFc82js0fmoRAP-qOIPu5THSWqfSmTELLqcUywGkijVjZULUrsm1j-9xgEGegouXxrmvz18jcbhFM2ACfIHnpRs4MMCjmQ4xFIuZOXhZmFhJgCQB_lbBKJt8V24UX9n68M6Bo7vruNXZ0yx405HZrGJ",
+      "icon_drag_url": "",
+      "name": "Operation Mecha Engine Badge",
+      "market_hash_name": "Operation Mecha Engine Badge",
+      "market_name": "Operation Mecha Engine Badge",
+      "name_color": "7D6D00",
+      "background_color": "3C352E",
+      "type": "Level 4 Badge",
+      "tradable": 0,
+      "marketable": 0,
+      "commodity": 0,
+      "market_tradable_restriction": "7",
+      "market_marketable_restriction": "0",
+      "descriptions": [
+        {
+          "value": "Your Mann Up progress through Operation Mecha Engine is saved on this badge."
+        },
+        {
+          "value": "Challenges completed: 1",
+          "color": "7ea9d1"
+        },
+        {
+          "value": "Completed: BigRock Bone shaker",
+          "color": "7ea9d1"
+        },
+        {
+          "value": " "
+        },
+        {
+          "value": "( Not Tradable )"
+        }
+      ],
+      "actions": [
+        {
+          "name": "Item Wiki Page...",
+          "link": "http:\/\/wiki.teamfortress.com\/scripts\/itemredirect.php?id=975&lang=en_US"
+        },
+        {
+          "name": "Inspect in Game...",
+          "link": "steam:\/\/rungame\/440\/76561202255233023\/+tf_econ_item_preview%20S%owner_steamid%A%assetid%D4612390235744957237"
+        }
+      ],
+      "market_actions": [
+        {
+          "name": "Inspect in Game...",
+          "link": "steam:\/\/rungame\/440\/76561202255233023\/+tf_econ_item_preview%20M%listingid%A%assetid%D4612390235744957237"
+        }
+      ],
+      "tags": [
+        {
+          "internal_name": "Unique",
+          "name": "Unique",
+          "category": "Quality",
+          "color": "7D6D00",
+          "category_name": "Quality"
+        },
+        {
+          "internal_name": "misc",
+          "name": "Cosmetic",
+          "category": "Type",
+          "category_name": "Type"
+        },
+        {
+          "internal_name": "Scout",
+          "name": "Scout",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Sniper",
+          "name": "Sniper",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Soldier",
+          "name": "Soldier",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Demoman",
+          "name": "Demoman",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Medic",
+          "name": "Medic",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Heavy",
+          "name": "Heavy",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Pyro",
+          "name": "Pyro",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Spy",
+          "name": "Spy",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Engineer",
+          "name": "Engineer",
+          "category": "Class",
+          "category_name": "Class"
+        }
+      ],
+      "app_data": {
+        "def_index": "975",
+        "quality": "6"
+      }
+    },
+    "815022885_426915863": {
+      "appid": "440",
+      "classid": "815022885",
+      "instanceid": "426915863",
+      "icon_url": "fWFc82js0fmoRAP-qOIPu5THSWqfSmTELLqcUywGkijVjZULUrsm1j-9xgEGegouXxrmvz18m8DvCP6IN-wBid0wq8dWjW46xQQpZbvmMzU3cAXDVvVYXaVrplHqXyZkvcJhB4e39OJfLVjx9NyRFTAnDPU",
+      "icon_url_large": "fWFc82js0fmoRAP-qOIPu5THSWqfSmTELLqcUywGkijVjZULUrsm1j-9xgEGegouXxrmvz18m8DvCP6IN-wBid0wq8dWjW46xQQpZbvmMzU3cAXDVvVYXaVrplHqXyZkvcJhB4e39OJfLVjx9NyRFTAnDPU",
+      "icon_drag_url": "",
+      "name": "Operation Two Cities Badge",
+      "market_hash_name": "Operation Two Cities Badge",
+      "market_name": "Operation Two Cities Badge",
+      "name_color": "7D6D00",
+      "background_color": "3C352E",
+      "type": "Level 446 Badge",
+      "tradable": 0,
+      "marketable": 0,
+      "commodity": 0,
+      "market_tradable_restriction": "7",
+      "market_marketable_restriction": "0",
+      "descriptions": [
+        {
+          "value": "Your Mann Up progress through Operation Two Cities is saved on this badge."
+        },
+        {
+          "value": "Challenges completed: 1",
+          "color": "7ea9d1"
+        },
+        {
+          "value": "Completed: Mannhattan Metro Malice",
+          "color": "7ea9d1"
+        },
+        {
+          "value": " "
+        },
+        {
+          "value": "( Not Tradable )"
+        }
+      ],
+      "actions": [
+        {
+          "name": "Item Wiki Page...",
+          "link": "http:\/\/wiki.teamfortress.com\/scripts\/itemredirect.php?id=1066&lang=en_US"
+        },
+        {
+          "name": "Inspect in Game...",
+          "link": "steam:\/\/rungame\/440\/76561202255233023\/+tf_econ_item_preview%20S%owner_steamid%A%assetid%D4614645355250481726"
+        }
+      ],
+      "market_actions": [
+        {
+          "name": "Inspect in Game...",
+          "link": "steam:\/\/rungame\/440\/76561202255233023\/+tf_econ_item_preview%20M%listingid%A%assetid%D4614645355250481726"
+        }
+      ],
+      "tags": [
+        {
+          "internal_name": "Unique",
+          "name": "Unique",
+          "category": "Quality",
+          "color": "7D6D00",
+          "category_name": "Quality"
+        },
+        {
+          "internal_name": "misc",
+          "name": "Cosmetic",
+          "category": "Type",
+          "category_name": "Type"
+        },
+        {
+          "internal_name": "Scout",
+          "name": "Scout",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Sniper",
+          "name": "Sniper",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Soldier",
+          "name": "Soldier",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Demoman",
+          "name": "Demoman",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Medic",
+          "name": "Medic",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Heavy",
+          "name": "Heavy",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Pyro",
+          "name": "Pyro",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Spy",
+          "name": "Spy",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Engineer",
+          "name": "Engineer",
+          "category": "Class",
+          "category_name": "Class"
+        }
+      ],
+      "app_data": {
+        "def_index": "1066",
+        "quality": "6"
+      }
+    },
+    "780611768_11220501": {
+      "appid": "440",
+      "classid": "780611768",
+      "instanceid": "11220501",
+      "icon_url": "fWFc82js0fmoRAP-qOIPu5THSWqfSmTELLqcUywGkijVjZULUrsm1j-9xgEGegouXxrmvz18jMHnAP2CDN8Mmsgy4N5Q2mc7xlh_MubiaGc1IVSQWPkJX6Ju91q7X3QzusVmVoLu9rhQfV_tqsKYZAhdCEiY",
+      "icon_url_large": "fWFc82js0fmoRAP-qOIPu5THSWqfSmTELLqcUywGkijVjZULUrsm1j-9xgEGegouXxrmvz18jMHnAP2CDN8Mmsgy4N5Q2mc7xlh_MubiaGc1IVSQWPkJX6Ju91q7X3QzusVmVoLu9rhQfV_tqsKYZAhdCEiY",
+      "icon_drag_url": "",
+      "name": "Operation Gear Grinder Badge",
+      "market_hash_name": "Operation Gear Grinder Badge",
+      "market_name": "Operation Gear Grinder Badge",
+      "name_color": "7D6D00",
+      "background_color": "3C352E",
+      "type": "Level 20 Badge",
+      "tradable": 0,
+      "marketable": 0,
+      "commodity": 0,
+      "market_tradable_restriction": "7",
+      "market_marketable_restriction": "0",
+      "descriptions": [
+        {
+          "value": "Your Mann Up progress through Operation Gear Grinder is saved on this badge."
+        },
+        {
+          "value": "Challenges completed: 0",
+          "color": "7ea9d1"
+        },
+        {
+          "value": " "
+        },
+        {
+          "value": "( Not Tradable )"
+        }
+      ],
+      "actions": [
+        {
+          "name": "Item Wiki Page...",
+          "link": "http:\/\/wiki.teamfortress.com\/scripts\/itemredirect.php?id=871&lang=en_US"
+        },
+        {
+          "name": "Inspect in Game...",
+          "link": "steam:\/\/rungame\/440\/76561202255233023\/+tf_econ_item_preview%20S%owner_steamid%A%assetid%D615988959482004255"
+        }
+      ],
+      "market_actions": [
+        {
+          "name": "Inspect in Game...",
+          "link": "steam:\/\/rungame\/440\/76561202255233023\/+tf_econ_item_preview%20M%listingid%A%assetid%D615988959482004255"
+        }
+      ],
+      "tags": [
+        {
+          "internal_name": "Unique",
+          "name": "Unique",
+          "category": "Quality",
+          "color": "7D6D00",
+          "category_name": "Quality"
+        },
+        {
+          "internal_name": "misc",
+          "name": "Cosmetic",
+          "category": "Type",
+          "category_name": "Type"
+        },
+        {
+          "internal_name": "Scout",
+          "name": "Scout",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Sniper",
+          "name": "Sniper",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Soldier",
+          "name": "Soldier",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Demoman",
+          "name": "Demoman",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Medic",
+          "name": "Medic",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Heavy",
+          "name": "Heavy",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Pyro",
+          "name": "Pyro",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Spy",
+          "name": "Spy",
+          "category": "Class",
+          "category_name": "Class"
+        },
+        {
+          "internal_name": "Engineer",
+          "name": "Engineer",
+          "category": "Class",
+          "category_name": "Class"
+        }
+      ],
+      "app_data": {
+        "def_index": "871",
+        "quality": "6"
+      }
+    }
+  },
+  "more": false,
+  "more_start": false
+}
