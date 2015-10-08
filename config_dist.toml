@@ -1,4 +1,9 @@
 Name = "your_twitch_username"
 Password = "oauth:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
 Server = "irc.twitch.tv:6667"
-AutoJoin = ["#roto_", "#manOfsnow", "#cuddli"]
+AutoJoin = ["#roto_", "#cuddli"]
+ApiKey = "your_steam_api_key"
+SteamID = "00000000000000000"
+DebugChannel = "#roto_"
+VerboseCallbackHandler = false
+Debug = false

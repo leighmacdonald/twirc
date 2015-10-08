@@ -40,17 +40,17 @@ var mvm_tags = map[string][]string{
 }
 
 type MvMTour struct {
-	Name string
-	Tours uint64
-	Missions []string
+	Name      string
+	Tours     uint64
+	Missions  []string
 	Completed []string
 }
 
 func NewMvMTour(name string, tours uint64, missions []string) MvMTour {
 	t := MvMTour{
-		Name: name,
-		Tours: tours,
-		Missions: missions,
+		Name:      name,
+		Tours:     tours,
+		Missions:  missions,
 		Completed: []string{},
 	}
 	return t
@@ -59,7 +59,6 @@ func NewMvMTour(name string, tours uint64, missions []string) MvMTour {
 func (mvm *MvMTour) AddCompleted(mission string) {
 	mvm.Completed = append(mvm.Completed, mission)
 }
-
 
 func (mvm *MvMTour) InfoStr() string {
 	return fmt.Sprintf("%s(%d): %d/%d", mvm.ShortName(), mvm.Tours, len(mvm.Completed), len(mvm.Missions))

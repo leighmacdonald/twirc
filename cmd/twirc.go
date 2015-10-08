@@ -8,7 +8,7 @@ import (
 
 func main() {
 	twirc.LoadConfig()
-	irc_conn, err := twirc.NewIrcClient(twirc.Conf)
+	irc_conn, err := twirc.NewIRCClient(twirc.Conf)
 	if err != nil {
 		irc_conn.Quit()
 		log.Fatalln(err.Error())

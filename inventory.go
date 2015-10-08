@@ -1,14 +1,14 @@
 package twirc
 
 import (
-	"net/http"
-	"fmt"
-	"io/ioutil"
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"log"
-	"strings"
+	"net/http"
 	"strconv"
+	"strings"
 )
 
 type (
