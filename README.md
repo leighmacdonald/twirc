@@ -28,6 +28,25 @@ any individual tour.
 	< !ip
     > [Game] Team Fortress 2 - 192.69.96.156:27021
 
+
+**!startip** [Owner only] Start the background monitoring service that will announce whenever you connect or 
+change game servers.
+
+    < !startip
+    > [Game] Started monitoring game state
+    
+**!stopip** [Owner only] Stop the background game info updater.
+    
+    < !stopip
+    > [Game] Stopped monitoring game state
+
+
+**!quit** [Owner only] Quit the server and shutdown the bot cleanly.
+
+    < !quit
+    > [Death Scene] Twas a scratch!
+    
+
 ## Configuration
 
 Create a config.toml file from the config_dist.toml example file. Edit the fields as 
@@ -50,7 +69,7 @@ you see fit. See below for a description of all the available fields.
     // Streamers steam ID, used as defaults for some commands
 	SteamID string
 
-	// Join these channels automatically
+	// Join these extra channels automatically, your own channel is joined by default already
 	AutoJoin []string
 
 	// Send error and debugging messages to this channel
