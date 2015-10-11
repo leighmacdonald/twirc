@@ -13,7 +13,9 @@ import (
 )
 
 var (
-	vanity_url = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=%s&vanityurl=%s"
+	vanity_url     = "http://api.steampowered.com/ISteamUser/ResolveVanityURL/v0001/?key=%s&vanityurl=%s"
+	LastGameIP     = "*"
+	UpdateGameData = true
 )
 
 type ApiVanityResponse struct {

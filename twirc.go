@@ -12,8 +12,9 @@ import (
 )
 
 var (
-	Conf Config
-	db   *bolt.DB
+	Conf      Config
+	db        *bolt.DB
+	stop_chan chan struct{}
 )
 
 const DB_STEAM_ID string = "steam_id"
@@ -64,9 +65,6 @@ func New(config Config) (*irc.Connection, error) {
 	irc_conn.AddCallback("PRIVMSG", func(e *irc.Event) {
 		fields := strings.Fields(strings.ToLower(e.Message()))
 
-		if fields[0] == "~halt" {
-			irc_conn.Quit()
-		}
 		if fields[0] == "!steamid" {
 			if len(fields) != 2 {
 				irc_conn.Privmsg(e.Arguments[0], "[SteamID] Must supply a vanity name to resolve")
@@ -138,12 +136,28 @@ func New(config Config) (*irc.Connection, error) {
 				if player_info.GameServerIP == "" {
 					irc_conn.Privmsgf(e.Arguments[0], "[Game] %s Game info n/a or playing unsupported game.", Conf.Name)
 				} else {
-					irc_conn.Privmsgf(e.Arguments[0], "[Game] %s - %s", player_info.GameExtraInfo, player_info.GameServerIP)
+					irc_conn.Privmsgf(e.Arguments[0], "[Game] %s - steam://connect/%s", player_info.GameExtraInfo, player_info.GameServerIP)
 				}
 			}
 			return
 		}
+		if strings.ToLower(e.Nick) == strings.ToLower(Conf.Name) {
+			if fields[0] == "!startip" {
+				UpdateGameData = true
+				time.Sleep(1 * time.Second)
+				irc_conn.Privmsg(e.Arguments[0], "[Game] Started monitoring game state")
+			}
 
+			if fields[0] == "!stopip" {
+				UpdateGameData = false
+				time.Sleep(1 * time.Second)
+				irc_conn.Privmsg(e.Arguments[0], "[Game] Stopped monitoring game state")
+			}
+			if fields[0] == "!quit" {
+				irc_conn.Privmsg(e.Arguments[0], "[Death Scene] Twas a scratch!")
+				irc_conn.Quit()
+			}
+		}
 		if fields[0] == "!mvm" || fields[0] == "!mymvm" {
 			var steam_id SteamID
 			if fields[0] == "!mvm" {
@@ -193,6 +207,7 @@ func New(config Config) (*irc.Connection, error) {
 	})
 
 	irc_conn.AddCallback("001", func(e *irc.Event) {
+		irc_conn.Join(fmt.Sprintf("#%s", Conf.Name))
 		for _, channel := range config.AutoJoin {
 			irc_conn.Join(channel)
 		}
@@ -202,6 +217,32 @@ func New(config Config) (*irc.Connection, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	ticker := time.NewTicker(60 * time.Second)
+	go func() {
+		for {
+			select {
+			case <-ticker.C:
+				if UpdateGameData {
+					player_info, err := GetPlayerInfo(Conf.ApiKey, SteamID(Conf.SteamID))
+					if err != nil {
+						log.Errorln(err.Error())
+						continue
+					}
+					if player_info.GameServerIP != LastGameIP {
+						irc_conn.Privmsgf(
+							fmt.Sprintf("#%s", Conf.Name),
+							"[Game Update] %s - steam://connect/%s", player_info.GameExtraInfo, player_info.GameServerIP,
+						)
+						LastGameIP = player_info.GameServerIP
+					}
+				}
+			case <-stop_chan:
+				ticker.Stop()
+				return
+			}
+		}
+	}()
 
 	return irc_conn, nil
 }
@@ -216,10 +257,12 @@ func stringInSlice(a string, list []string) bool {
 }
 
 func Shutdown() {
+	close(stop_chan)
 	db.Close()
 }
 
 func init() {
+	stop_chan = make(chan struct{})
 	if _, err := toml.DecodeFile("config.toml", &Conf); err != nil {
 		// handle error
 		log.Fatalln(err.Error())
