@@ -5,12 +5,18 @@ import (
 	"fmt"
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
+	"github.com/boltdb/bolt"
 	"github.com/thoj/go-ircevent"
 	"strings"
 	"time"
 )
 
-var Conf Config
+var (
+	Conf Config
+	db   *bolt.DB
+)
+
+const DB_STEAM_ID string = "steam_id"
 
 type (
 	Config struct {
@@ -43,10 +49,13 @@ type (
 
 		// Print debug irc info to the console
 		Debug bool
+
+		// Database file path to use
+		Database string
 	}
 )
 
-func NewIRCClient(config Config) (*irc.Connection, error) {
+func New(config Config) (*irc.Connection, error) {
 	irc_conn := irc.IRC(config.Name, config.Name)
 	irc_conn.VerboseCallbackHandler = config.VerboseCallbackHandler
 	irc_conn.Debug = config.Debug
@@ -60,33 +69,108 @@ func NewIRCClient(config Config) (*irc.Connection, error) {
 		}
 		if fields[0] == "!steamid" {
 			if len(fields) != 2 {
-				irc_conn.Privmsg(e.Arguments[0], "> Must supply a vanity name to resolve")
+				irc_conn.Privmsg(e.Arguments[0], "[SteamID] Must supply a vanity name to resolve")
 				return
 			}
 
 			steam_id, err := ResolveVanity(fields[1])
 			if err != nil {
-				irc_conn.Privmsg(e.Arguments[0], fmt.Sprintf("> Error trying to resolve %s", fields[1]))
+				irc_conn.Privmsgf(e.Arguments[0], "[SteamID] Error trying to resolve %s", fields[1])
 				return
 			}
 			time.Sleep(1 * time.Second)
-			irc_conn.Privmsg(e.Arguments[0], fmt.Sprintf("> Steam ID: %s => %s", fields[1], steam_id))
+			irc_conn.Privmsgf(e.Arguments[0], "[SteamID] %s => %s", fields[1], steam_id)
 		}
-		if fields[0] == "!mvm" {
-			steam_id := Conf.SteamID
-			if len(fields) >= 2 {
-				steam_id = fields[1]
-			}
-			id, err := SteamID(steam_id)
-			if err != nil {
-				irc_conn.Privmsg(e.Arguments[0], err.Error())
+		if fields[0] == "!setsteamid" {
+			time.Sleep(1 * time.Second)
+			if len(fields) != 2 {
+				irc_conn.Privmsg(e.Arguments[0], "[SteamID] Command only takes 1 argument, the steamid or vanity name")
 				return
 			}
-			inv, err := FetchInventory(id)
+			steam_id, err := NewSteamID(fields[1])
 			if err != nil {
-				irc_conn.Privmsg(e.Arguments[0], "Invalid ID supplied")
-				irc_conn.Privmsg(Conf.DebugChannel, err.Error())
-				return
+				irc_conn.Privmsg(e.Arguments[0], "[SteamID] Error resolving steam id")
+			} else {
+				if err := SetSteamID(e.Nick, steam_id); err != nil {
+					irc_conn.Privmsg(e.Arguments[0], "[SteamID] Internal oopsie")
+				} else {
+					irc_conn.Privmsg(e.Arguments[0], "[SteamID] Set steam id successfully")
+				}
+			}
+			return
+		}
+
+		if fields[0] == "!mysteamid" {
+			time.Sleep(1 * time.Second)
+			steam_id, err := GetSteamID(strings.ToLower(e.Nick))
+			if err != nil {
+				irc_conn.Privmsg(e.Arguments[0], "[SteamID] Must set steam id with !setsteamid command first")
+			} else {
+				irc_conn.Privmsgf(e.Arguments[0], "[SteamID] %s => %s", e.Nick, steam_id)
+			}
+			return
+		}
+
+		if fields[0] == "!profile" {
+			time.Sleep(1 * time.Second)
+			sid, _ := NewSteamID(Conf.SteamID)
+			irc_conn.Privmsg(e.Arguments[0], sid.ProfileURL())
+			return
+		}
+
+		if fields[0] == "!myprofile" {
+			time.Sleep(1 * time.Second)
+			steam_id, err := GetSteamID(e.Nick)
+			if err != nil {
+				irc_conn.Privmsg(e.Arguments[0], "Must first set steam id with !setsteamid <steamid>")
+			} else {
+				irc_conn.Privmsg(e.Arguments[0], steam_id.ProfileURL())
+			}
+			return
+		}
+
+		if fields[0] == "!ip" {
+			time.Sleep(1 * time.Second)
+			player_info, err := GetPlayerInfo(Conf.ApiKey, SteamID(Conf.SteamID))
+			if err != nil {
+				irc_conn.Privmsg(e.Arguments[0], "Could not fetch player data")
+			} else {
+				if player_info.GameServerIP == "" {
+					irc_conn.Privmsgf(e.Arguments[0], "[Game] %s Game info n/a or playing unsupported game.", Conf.Name)
+				} else {
+					irc_conn.Privmsgf(e.Arguments[0], "[Game] %s - %s", player_info.GameExtraInfo, player_info.GameServerIP)
+				}
+			}
+			return
+		}
+
+		if fields[0] == "!mvm" || fields[0] == "!mymvm" {
+			var steam_id SteamID
+			if fields[0] == "!mvm" {
+				sid := Conf.SteamID
+				if len(fields) >= 2 {
+					sid = fields[1]
+				}
+				var err error
+				steam_id, err = NewSteamID(sid)
+				log.Println("Using ID:", steam_id)
+				if err != nil {
+					irc_conn.Privmsg(e.Arguments[0], err.Error())
+					return
+				}
+			} else {
+				sid, err := GetSteamID(e.Nick)
+				if err != nil {
+					irc_conn.Privmsg(e.Arguments[0], "Must first set steam id with !setsteamid <steamid>")
+					return
+				} else {
+					steam_id = sid
+				}
+			}
+
+			inv, err := FetchInventory(steam_id)
+			if err != nil {
+				log.Println(err.Error())
 			}
 
 			tours := inv.FindMVMData()
@@ -122,16 +206,6 @@ func NewIRCClient(config Config) (*irc.Connection, error) {
 	return irc_conn, nil
 }
 
-func LoadConfig() {
-	if _, err := toml.DecodeFile("config.toml", &Conf); err != nil {
-		// handle error
-		log.Fatalln(err.Error())
-	}
-	if Conf.ApiKey == "" {
-		log.Fatalln("Steam API Key must be set")
-	}
-}
-
 func stringInSlice(a string, list []string) bool {
 	for _, b := range list {
 		if b == a {
@@ -139,4 +213,32 @@ func stringInSlice(a string, list []string) bool {
 		}
 	}
 	return false
+}
+
+func Shutdown() {
+	db.Close()
+}
+
+func init() {
+	if _, err := toml.DecodeFile("config.toml", &Conf); err != nil {
+		// handle error
+		log.Fatalln(err.Error())
+	}
+	if Conf.ApiKey == "" {
+		log.Fatalln("Steam API Key must be set")
+	}
+	log.Debugln("Using database file:", Conf.Database)
+	db_global, err := bolt.Open(Conf.Database, 0600, &bolt.Options{Timeout: 1 * time.Second})
+	if err != nil {
+		log.Fatalln(err.Error())
+	}
+	db = db_global
+	err = db.Update(func(tx *bolt.Tx) error {
+		_, e := tx.CreateBucketIfNotExists([]byte(DB_STEAM_ID))
+		return e
+	})
+	if err != nil {
+		log.Fatalln(err.Error())
+		db.Close()
+	}
 }
