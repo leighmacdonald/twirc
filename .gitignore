@@ -26,3 +26,4 @@ _testmain.go
 *.iml
 *.db
 config.toml
+release/
