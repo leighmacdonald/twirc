@@ -85,21 +85,21 @@ type (
 	}
 )
 
-func FetchInventory(steam_id string) (*Inventory, error) {
+func FetchInventory(steam_id SteamID) (*Inventory, error) {
 	var bits Inventory
-
 	resp, err := http.Get(fmt.Sprintf("http://steamcommunity.com/profiles/%s/inventory/json/440/2/", steam_id))
 	if err != nil {
 		return &bits, err
 	}
 	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-
-	err = DecodeInventory(body, &bits)
-	if err != nil {
-		return &bits, err
+	body, err_b := ioutil.ReadAll(resp.Body)
+	if err_b != nil {
+		return &bits, err_b
 	}
-
+	err_c := DecodeInventory(body, &bits)
+	if err_c != nil {
+		return &bits, err_c
+	}
 	return &bits, nil
 }
 

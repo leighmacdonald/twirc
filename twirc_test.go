@@ -19,14 +19,13 @@ func TestDecodeInventory(t *testing.T) {
 }
 
 func TestFetchInventory(t *testing.T) {
-	_, err := FetchInventory("76561198084134025")
-	if err != nil {
-		t.Error(err.Error())
+	inv, _ := FetchInventory("76561198084134025")
+	if len(inv.Inventory) < 10 {
+		t.Error("Did not decode enough entities")
 	}
 }
 
 func TestResolveVanity(t *testing.T) {
-	LoadConfig()
 	steam_id, err := ResolveVanity("manofsnow")
 	if err != nil {
 		t.Log(err.Error())
@@ -39,8 +38,14 @@ func TestResolveVanity(t *testing.T) {
 }
 
 func TestSteamID(t *testing.T) {
-	steam_id_1 := SteamID("manofsnow")
-	steam_id_2 := SteamID("76561198005475714")
+	steam_id_1, e1 := NewSteamID("manofsnow")
+	if e1 != nil {
+		t.Error(e1.Error())
+	}
+	steam_id_2, e2 := NewSteamID("76561198005475714")
+	if e2 != nil {
+		t.Error(e1.Error())
+	}
 	if steam_id_1 != steam_id_2 {
 		t.Error("Invalid steam id returned")
 	}

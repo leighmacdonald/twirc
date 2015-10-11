@@ -5,10 +5,9 @@ import (
 	"github.com/leighmacdonald/twirc"
 )
 
-
 func main() {
-	twirc.LoadConfig()
-	irc_conn, err := twirc.NewIRCClient(twirc.Conf)
+	defer twirc.Shutdown()
+	irc_conn, err := twirc.New(twirc.Conf)
 	if err != nil {
 		irc_conn.Quit()
 		log.Fatalln(err.Error())
