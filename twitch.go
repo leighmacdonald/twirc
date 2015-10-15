@@ -22,6 +22,10 @@ type ChatterTypes struct {
 	Viewers    []Chatter `json:"viewers"`
 }
 
+func (c *ChatterResponse) Count() int {
+	return len(c.Chatters.Admins) + len(c.Chatters.GlobalMods) + len(c.Chatters.Moderators) + len(c.Chatters.Staff) + len(c.Chatters.Viewers)
+}
+
 func decodeChatters(resp_body []byte, chatters_resp *ChatterResponse) error {
 	err := json.Unmarshal(resp_body, chatters_resp)
 	if err != nil {

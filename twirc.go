@@ -56,6 +56,14 @@ type (
 	}
 )
 
+func (c *Config) ChannelName() string {
+	return strings.ToLower(fmt.Sprintf("#%s", c.Name))
+}
+
+func _pause() {
+	time.Sleep(1 * time.Second)
+}
+
 func New(config Config) (*irc.Connection, error) {
 	irc_conn := irc.IRC(config.Name, config.Name)
 	irc_conn.VerboseCallbackHandler = config.VerboseCallbackHandler
@@ -64,8 +72,20 @@ func New(config Config) (*irc.Connection, error) {
 
 	irc_conn.AddCallback("PRIVMSG", func(e *irc.Event) {
 		fields := strings.Fields(strings.ToLower(e.Message()))
+		if fields[0] == "!viewers" {
 
-		if fields[0] == "!steamid" {
+			chatters, err := Chatters(config.ChannelName())
+			var msg string
+			if err != nil {
+				log.Error(err.Error())
+				msg = "Error finding channel viewers"
+			} else {
+				msg = fmt.Sprintf("[Viewers] Currently %d viewers online.", chatters.ChatterCount)
+			}
+
+			irc_conn.Privmsg(config.ChannelName(), msg)
+
+		} else if fields[0] == "!steamid" {
 			if len(fields) != 2 {
 				irc_conn.Privmsg(e.Arguments[0], "[SteamID] Must supply a vanity name to resolve")
 				return
@@ -76,11 +96,12 @@ func New(config Config) (*irc.Connection, error) {
 				irc_conn.Privmsgf(e.Arguments[0], "[SteamID] Error trying to resolve %s", fields[1])
 				return
 			}
-			time.Sleep(1 * time.Second)
+			_pause()
 			irc_conn.Privmsgf(e.Arguments[0], "[SteamID] %s => %s", fields[1], steam_id)
 		}
+
 		if fields[0] == "!setsteamid" {
-			time.Sleep(1 * time.Second)
+			_pause()
 			if len(fields) != 2 {
 				irc_conn.Privmsg(e.Arguments[0], "[SteamID] Command only takes 1 argument, the steamid or vanity name")
 				return
@@ -95,41 +116,33 @@ func New(config Config) (*irc.Connection, error) {
 					irc_conn.Privmsg(e.Arguments[0], "[SteamID] Set steam id successfully")
 				}
 			}
-			return
-		}
 
-		if fields[0] == "!mysteamid" {
-			time.Sleep(1 * time.Second)
+		} else if fields[0] == "!mysteamid" {
+			_pause()
 			steam_id, err := GetSteamID(strings.ToLower(e.Nick))
 			if err != nil {
 				irc_conn.Privmsg(e.Arguments[0], "[SteamID] Must set steam id with !setsteamid command first")
 			} else {
 				irc_conn.Privmsgf(e.Arguments[0], "[SteamID] %s => %s", e.Nick, steam_id)
 			}
-			return
-		}
 
-		if fields[0] == "!profile" {
-			time.Sleep(1 * time.Second)
+		} else if fields[0] == "!profile" {
+			_pause()
 			sid, _ := NewSteamID(Conf.SteamID)
 			irc_conn.Privmsg(e.Arguments[0], sid.ProfileURL())
-			return
-		}
 
-		if fields[0] == "!myprofile" {
-			time.Sleep(1 * time.Second)
+		} else if fields[0] == "!myprofile" {
+			_pause()
 			steam_id, err := GetSteamID(e.Nick)
 			if err != nil {
 				irc_conn.Privmsg(e.Arguments[0], "Must first set steam id with !setsteamid <steamid>")
 			} else {
 				irc_conn.Privmsg(e.Arguments[0], steam_id.ProfileURL())
 			}
-			return
-		}
 
-		if fields[0] == "!ip" {
-			time.Sleep(1 * time.Second)
+		} else if fields[0] == "!ip" {
 			player_info, err := GetPlayerInfo(Conf.ApiKey, SteamID(Conf.SteamID))
+			_pause()
 			if err != nil {
 				irc_conn.Privmsg(e.Arguments[0], "Could not fetch player data")
 			} else {
@@ -139,26 +152,23 @@ func New(config Config) (*irc.Connection, error) {
 					irc_conn.Privmsgf(e.Arguments[0], "[Game] %s - steam://connect/%s", player_info.GameExtraInfo, player_info.GameServerIP)
 				}
 			}
-			return
-		}
-		if strings.ToLower(e.Nick) == strings.ToLower(Conf.Name) {
-			if fields[0] == "!startip" {
-				UpdateGameData = true
-				time.Sleep(1 * time.Second)
-				irc_conn.Privmsg(e.Arguments[0], "[Game] Started monitoring game state")
-			}
 
-			if fields[0] == "!stopip" {
-				UpdateGameData = false
-				time.Sleep(1 * time.Second)
-				irc_conn.Privmsg(e.Arguments[0], "[Game] Stopped monitoring game state")
+		} else if fields[0] == "!mvmlobby" {
+			//var steam_id SteamID
+			sid := Conf.SteamID
+			if len(fields) >= 2 {
+				sid = fields[1]
 			}
-			if fields[0] == "!quit" {
-				irc_conn.Privmsg(e.Arguments[0], "[Death Scene] Twas a scratch!")
-				irc_conn.Quit()
+			steam_id, err := NewSteamID(sid)
+			log.Println("Using ID:", steam_id)
+			if err != nil {
+				irc_conn.Privmsg(e.Arguments[0], err.Error())
+				return
 			}
-		}
-		if fields[0] == "!mvm" || fields[0] == "!mymvm" {
+			_pause()
+			irc_conn.Privmsgf(e.Arguments[0], "[MVMLobby] %s", steam_id.MVMLobbyURL())
+
+		} else if fields[0] == "!mvm" || fields[0] == "!mymvm" {
 			var steam_id SteamID
 			if fields[0] == "!mvm" {
 				sid := Conf.SteamID
@@ -201,8 +211,25 @@ func New(config Config) (*irc.Connection, error) {
 				buffer.WriteString(" | ")
 				buffer.WriteString(t.InfoStr())
 			}
-			time.Sleep(1 * time.Second)
+			_pause()
 			irc_conn.Privmsg(e.Arguments[0], buffer.String())
+		}
+
+		// Owner only commands
+		if strings.ToLower(e.Nick) == strings.ToLower(Conf.Name) {
+			if fields[0] == "!startip" {
+				UpdateGameData = true
+				_pause()
+				irc_conn.Privmsg(e.Arguments[0], "[Game] Started monitoring game state")
+			} else if fields[0] == "!stopip" {
+				UpdateGameData = false
+				_pause()
+				irc_conn.Privmsg(e.Arguments[0], "[Game] Stopped monitoring game state")
+			} else if fields[0] == "!quit" {
+				_pause()
+				irc_conn.Privmsg(e.Arguments[0], "[Death Scene] Twas a scratch!")
+				irc_conn.Quit()
+			}
 		}
 	})
 

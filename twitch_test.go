@@ -16,9 +16,10 @@ func TestDecodeChatters(t *testing.T) {
 	if err != nil {
 		t.Error(err.Error())
 	}
-	if chatters_resp.ChatterCount != 725 {
+	if chatters_resp.ChatterCount != 725 || chatters_resp.Count() != 725 {
 		t.Errorf("Invalid cound: %d", chatters_resp.ChatterCount)
 	}
+
 }
 
 func TestChatters(t *testing.T) {

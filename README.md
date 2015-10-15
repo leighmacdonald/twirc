@@ -23,6 +23,11 @@ any individual tour.
 	< !setsteamid 76561197970669109
     > Set steam id successfully
 
+**!viewers** Fetch and return the current active viewer counts for the channel.
+
+    < !viewers
+    > [Viewers] Currently 0 viewers online.
+
 **!ip** Returns the current game info including server ip. Only works for some games using steam api.
 
 	< !ip

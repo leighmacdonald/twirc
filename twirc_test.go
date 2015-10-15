@@ -49,5 +49,4 @@ func TestSteamID(t *testing.T) {
 	if steam_id_1 != steam_id_2 {
 		t.Error("Invalid steam id returned")
 	}
-
 }
