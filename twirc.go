@@ -232,8 +232,17 @@ func New(config Config) (*irc.Connection, error) {
 			}
 		}
 	})
-
+	irc_conn.AddCallback("JOIN", func(e *irc.Event) {
+		log.Println(e.Nick)
+	})
+	irc_conn.AddCallback("PART", func(e *irc.Event) {
+		log.Println(e.Nick)
+	})
 	irc_conn.AddCallback("001", func(e *irc.Event) {
+		irc_conn.SendRaw("CAP REQ :twitch.tv/membership")
+		irc_conn.SendRaw("CAP REQ :twitch.tv/tags")
+		irc_conn.SendRaw("CAP REQ :twitch.tv/commands")
+		_pause()
 		irc_conn.Join(fmt.Sprintf("#%s", Conf.Name))
 		for _, channel := range config.AutoJoin {
 			irc_conn.Join(channel)
