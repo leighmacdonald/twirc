@@ -7,4 +7,4 @@ SteamID = "00000000000000000"
 DebugChannel = "#roto_"
 VerboseCallbackHandler = false
 Debug = false
-Database = twirc.db
+Database = "twirc.db"
