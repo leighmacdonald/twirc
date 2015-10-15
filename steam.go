@@ -53,7 +53,7 @@ type PlayerInfo struct {
 	RealName                 string  `json:"realname"`
 	PrimaryClanID            string  `json:"primaryclanid"`
 	TimeCreated              int     `json:"timecreated"`
-	PersonastateFlags        int     `json:"personastateflags"`
+	PersonaStateFlags        int     `json:"personastateflags"`
 	GameServerIP             string  `json:"gameserverip"`
 	GameExtraInfo            string  `json:"gameextrainfo"`
 	GameID                   string  `json:"gameid"`
@@ -87,6 +87,10 @@ func NewSteamID(steam_id string) (SteamID, error) {
 
 func (sid SteamID) ProfileURL() string {
 	return fmt.Sprintf("https://steamcommunity.com/profiles/%s", sid)
+}
+
+func (sid SteamID) MVMLobbyURL() string {
+	return fmt.Sprintf("http://mvmlobby.com/profile/%s", sid)
 }
 
 func SetSteamID(username string, steam_id SteamID) error {
@@ -132,13 +136,13 @@ func GetPlayerInfo(api_key string, steam_id SteamID) (*PlayerInfo, error) {
 		return &player_info, err
 	}
 	defer resp.Body.Close()
-	body, err_b := ioutil.ReadAll(resp.Body)
-	if err_b != nil {
-		return &player_info, err_b
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return &player_info, err
 	}
-	err_c := decodePlayerSummary(body, &info_response)
-	if err_c != nil {
-		return &player_info, err_c
+	err = decodePlayerSummary(body, &info_response)
+	if err != nil {
+		return &player_info, err
 	}
 
 	if len(info_response.Response.Players) != 1 {
