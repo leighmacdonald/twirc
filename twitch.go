@@ -7,14 +7,6 @@ import (
 	"net/http"
 )
 
-var (
-	ActiveViewers = make(map[string]*Viewer)
-)
-
-type Viewer struct {
-	Name string
-}
-
 type Chatter string
 
 type ChatterResponse struct {
@@ -60,15 +52,4 @@ func Chatters(channel string) (*ChatterResponse, error) {
 		return &chatters_resp, err
 	}
 	return &chatters_resp, nil
-}
-
-func AddViewer(viewer Viewer) {
-
-}
-
-func NewViewer(name string, host_mask string) *Viewer {
-	viewer := Viewer{
-		Name:     name,
-		HostMask: host_mask,
-	}
 }

@@ -33,7 +33,12 @@ any individual tour.
 	< !ip
     > [Game] Team Fortress 2 - 192.69.96.156:27021
 
+**!scm** Returns the most recent steam community market data for the requested item.
 
+	< !scm Strange Rocket Launcher
+    > [Market] Strange Rocket Launcher Lowest: $0.55 Volume: 133
+    
+    
 **!startip** [Owner only] Start the background monitoring service that will announce whenever you connect or 
 change game servers.
 

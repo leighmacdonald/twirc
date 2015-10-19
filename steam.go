@@ -62,15 +62,7 @@ type PlayerInfo struct {
 func ResolveVanity(name string) (SteamID, error) {
 	var api_resp ApiVanityResponse
 	full_url := fmt.Sprintf(vanity_url, Conf.ApiKey, name)
-	resp, err := http.Get(full_url)
-	if err != nil {
-		return "", err
-	}
-	defer resp.Body.Close()
-	body, err := ioutil.ReadAll(resp.Body)
-
-	err = json.Unmarshal(body, &api_resp)
-
+	err := loadJSON(full_url, &api_resp)
 	if err != nil {
 		return "", err
 	}

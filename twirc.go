@@ -74,7 +74,7 @@ func New(config Config) (*irc.Connection, error) {
 		fields := strings.Fields(strings.ToLower(e.Message()))
 		if fields[0] == "!viewers" {
 
-			chatters, err := Chatters(config.ChannelName())
+			chatters, err := Chatters(fmt.Sprintf("#%s", e.Arguments[0]))
 			var msg string
 			if err != nil {
 				log.Error(err.Error())
@@ -83,7 +83,7 @@ func New(config Config) (*irc.Connection, error) {
 				msg = fmt.Sprintf("[Viewers] Currently %d viewers online.", chatters.ChatterCount)
 			}
 
-			irc_conn.Privmsg(config.ChannelName(), msg)
+			irc_conn.Privmsg(e.Arguments[0], msg)
 
 		} else if fields[0] == "!steamid" {
 			if len(fields) != 2 {
@@ -98,9 +98,7 @@ func New(config Config) (*irc.Connection, error) {
 			}
 			_pause()
 			irc_conn.Privmsgf(e.Arguments[0], "[SteamID] %s => %s", fields[1], steam_id)
-		}
-
-		if fields[0] == "!setsteamid" {
+		} else if fields[0] == "!setsteamid" {
 			_pause()
 			if len(fields) != 2 {
 				irc_conn.Privmsg(e.Arguments[0], "[SteamID] Command only takes 1 argument, the steamid or vanity name")
@@ -213,6 +211,24 @@ func New(config Config) (*irc.Connection, error) {
 			}
 			_pause()
 			irc_conn.Privmsg(e.Arguments[0], buffer.String())
+		} else if fields[0] == "!scm" {
+			_pause()
+			if len(fields) == 1 {
+				irc_conn.Privmsgf(e.Arguments[0], "[Market] Must supply item name to lookup")
+			} else {
+				item_name := strings.Join(fields[1:], " ")
+				log.Println(item_name)
+				price, err := GetPrice(item_name)
+				if err != nil {
+					irc_conn.Privmsg(e.Arguments[0], "[Market] Failed to fetch price")
+				} else {
+					irc_conn.Privmsgf(e.Arguments[0], "[Market] %s Lowest: %s Volume: %d", price.Name, price.LowestPrice, price.Volume)
+				}
+
+			}
+		} else if fields[0] == "!commands" {
+			_pause()
+			irc_conn.Privmsg(e.Arguments[0], "[Commands] !scm, !setsteamid, !mvm, !mvmlobby, !mysteamid, !ip, !viewers")
 		}
 
 		// Owner only commands
@@ -240,7 +256,7 @@ func New(config Config) (*irc.Connection, error) {
 	})
 	irc_conn.AddCallback("001", func(e *irc.Event) {
 		irc_conn.SendRaw("CAP REQ :twitch.tv/membership")
-		irc_conn.SendRaw("CAP REQ :twitch.tv/tags")
+		//		irc_conn.SendRaw("CAP REQ :twitch.tv/tags")
 		irc_conn.SendRaw("CAP REQ :twitch.tv/commands")
 		_pause()
 		irc_conn.Join(fmt.Sprintf("#%s", Conf.Name))
