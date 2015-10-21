@@ -226,9 +226,13 @@ func New(config Config) (*irc.Connection, error) {
 				}
 
 			}
+
 		} else if fields[0] == "!commands" {
 			_pause()
 			irc_conn.Privmsg(e.Arguments[0], "[Commands] !scm, !setsteamid, !mvm, !mvmlobby, !mysteamid, !ip, !viewers")
+
+		} else if fields[0] == "!prices" {
+
 		}
 
 		// Owner only commands
