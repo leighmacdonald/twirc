@@ -33,8 +33,8 @@ type (
 	BPCurrency struct {
 		Value      float64 `json:"value"`
 		ValueHigh  float64 `json:"Value_high"`
-		Currency   string  `json:"Currebct"`
-		Difference float64 `json:""Difference`
+		Currency   string  `json:"currency"`
+		Difference float64 `json:"difference"`
 	}
 )
 

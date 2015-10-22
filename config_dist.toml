@@ -9,3 +9,4 @@ VerboseCallbackHandler = false
 Debug = false
 Database = "twirc.db"
 BackpackTFApiKey = ""
+Prefix = "!"
