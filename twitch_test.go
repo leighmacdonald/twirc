@@ -1,6 +1,7 @@
 package twirc
 
 import (
+	"fmt"
 	"io/ioutil"
 	"testing"
 )
@@ -29,5 +30,15 @@ func TestChatters(t *testing.T) {
 	}
 	if chatters.ChatterCount <= 0 {
 		t.Errorf("Invalid chatter count returned: %d", chatters.ChatterCount)
+	}
+}
+
+func TestFetchEmotes(t *testing.T) {
+	emotes, err := FetchEmotes()
+	if err != nil {
+		t.Error(err.Error())
+	}
+	if len(emotes.Emoticons) == 0 {
+		t.Error("Invalid results returned")
 	}
 }
