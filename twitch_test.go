@@ -1,7 +1,6 @@
 package twirc
 
 import (
-	"fmt"
 	"io/ioutil"
 	"testing"
 )
