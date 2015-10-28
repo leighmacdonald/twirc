@@ -56,8 +56,8 @@ func HandleSetSteamID(fields []string, e *irc.Event) (string, error) {
 }
 
 func HandleMySteamID(fields []string, e *irc.Event) (string, error) {
-	steam_id, err := GetSteamID(strings.ToLower(e.Nick))
-	if err != nil {
+	steam_id := GetSteamID(strings.ToLower(e.Nick))
+	if steam_id == "" {
 		return "[SteamID] Must set steam id with !setsteamid command first", InvalidArguments
 	} else {
 		return fmt.Sprintf("[SteamID] %s => %s", e.Nick, steam_id), nil
@@ -73,8 +73,8 @@ func HandleProfile(fields []string, e *irc.Event) (string, error) {
 }
 
 func HandleMyProfile(fields []string, e *irc.Event) (string, error) {
-	steam_id, err := GetSteamID(e.Nick)
-	if err != nil {
+	steam_id := GetSteamID(e.Nick)
+	if steam_id == "" {
 		return "Must first set steam id with !setsteamid <steamid>", InvalidArguments
 	} else {
 		return fmt.Sprintf("[Steam Profile] %s", steam_id.ProfileURL()), nil
@@ -100,8 +100,8 @@ func HandleMVM(fields []string, e *irc.Event) (string, error) {
 			return "Failed to find valid SteamID", err
 		}
 	} else {
-		sid, err := GetSteamID(e.Nick)
-		if err != nil {
+		sid := GetSteamID(e.Nick)
+		if sid == "" {
 			return "Must first set steam id with !setsteamid <steamid>", InvalidArguments
 		} else {
 			steam_id = sid

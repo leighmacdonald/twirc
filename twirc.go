@@ -1,10 +1,11 @@
 package twirc
 
 import (
+	"encoding/json"
 	"fmt"
 	"github.com/BurntSushi/toml"
 	log "github.com/Sirupsen/logrus"
-	"github.com/boltdb/bolt"
+	"github.com/jmoiron/sqlx"
 	"github.com/thoj/go-ircevent"
 	"strings"
 	"time"
@@ -12,12 +13,25 @@ import (
 
 var (
 	Conf      Config
-	db        *bolt.DB
 	stop_chan chan struct{}
-	Handlers  map[string]IRCHandlerFunc
+	Handlers  = map[string]IRCHandlerFunc{
+		"viewers":    HandleViewers,
+		"steamid":    HandleGetSteamID,
+		"setsteamid": HandleSetSteamID,
+		"mysteamid":  HandleMySteamID,
+		"profile":    HandleProfile,
+		"myprofile":  HandleMyProfile,
+		"commands":   HandleCommands,
+		"mvm":        HandleMVM,
+		"mymvm":      HandleMVM,
+		"ip":         HandleIP,
+		"startip":    HandleStartIP,
+		"stopip":     HandleStopIP,
+		"quit":       HandleQuit,
+		"mvmlobby":   HandleMVMLobby,
+		"scm":        HandleSCM,
+	}
 )
-
-const DB_STEAM_ID string = "steam_id"
 
 type (
 	Config struct {
@@ -84,6 +98,9 @@ func New(config Config) (*irc.Connection, error) {
 				}
 				_pause()
 				irc_conn.Privmsg(e.Arguments[0], msg)
+			} else {
+				user := GetOrCreateUser(e.Nick)
+				NewChatMsg(user, e.Message()).Save(SqlDB)
 			}
 		}
 	})
@@ -149,29 +166,9 @@ func stringInSlice(a string, list []string) bool {
 
 func Shutdown() {
 	close(stop_chan)
-	db.Close()
 }
 
 func init() {
-	// Maps !{command} to actual functions
-	Handlers = map[string]IRCHandlerFunc{
-		"viewers":    HandleViewers,
-		"steamid":    HandleGetSteamID,
-		"setsteamid": HandleSetSteamID,
-		"mysteamid":  HandleMySteamID,
-		"profile":    HandleProfile,
-		"myprofile":  HandleMyProfile,
-		"commands":   HandleCommands,
-		"mvm":        HandleMVM,
-		"mymvm":      HandleMVM,
-		"ip":         HandleIP,
-		"startip":    HandleStartIP,
-		"stopip":     HandleStopIP,
-		"quit":       HandleQuit,
-		"mvmlobby":   HandleMVMLobby,
-		"scm":        HandleSCM,
-	}
-
 	stop_chan = make(chan struct{})
 	if _, err := toml.DecodeFile("config.toml", &Conf); err != nil {
 		// handle error
@@ -180,18 +177,18 @@ func init() {
 	if Conf.ApiKey == "" {
 		log.Fatalln("Steam API Key must be set")
 	}
+	SqlDB = sqlx.MustConnect("sqlite3", "./.twirc.db")
+
+	initTables(SqlDB)
+
 	log.Debugln("Using database file:", Conf.Database)
-	db_global, err := bolt.Open(Conf.Database, 0600, &bolt.Options{Timeout: 1 * time.Second})
+}
+
+func PrettyPrint(i interface{}) {
+	out, err := json.Marshal(i)
 	if err != nil {
-		log.Fatalln(err.Error())
+		panic(err)
 	}
-	db = db_global
-	err = db.Update(func(tx *bolt.Tx) error {
-		_, e := tx.CreateBucketIfNotExists([]byte(DB_STEAM_ID))
-		return e
-	})
-	if err != nil {
-		log.Fatalln(err.Error())
-		db.Close()
-	}
+
+	fmt.Println(string(out))
 }

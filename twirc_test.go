@@ -50,3 +50,17 @@ func TestSteamID(t *testing.T) {
 		t.Error("Invalid steam id returned")
 	}
 }
+
+func TestGetOrCreateUser(t *testing.T) {
+	username := "test"
+	DeleteUserByName(SqlDB, username)
+	u1 := GetOrCreateUser(username)
+	if u1.Username != username {
+		t.Error("Invalid value")
+	} else {
+		u2 := GetOrCreateUser(username)
+		if u2.UserID != u1.UserID {
+			t.Error("Invalid value")
+		}
+	}
+}

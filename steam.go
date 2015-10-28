@@ -4,9 +4,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
-	"github.com/boltdb/bolt"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -86,26 +84,20 @@ func (sid SteamID) MVMLobbyURL() string {
 }
 
 func SetSteamID(username string, steam_id SteamID) error {
-	return db.Update(func(tx *bolt.Tx) error {
-		err := tx.Bucket([]byte(DB_STEAM_ID)).Put([]byte(strings.ToLower(username)), []byte(steam_id))
-		if err != nil {
-			log.Println("Failed to save steam id")
-			log.Println(err.Error())
-		}
-		return err
-	})
+	id := GetSteamID(username)
+	if id == "" {
+
+	}
+	tx := SqlDB.MustBegin()
+	tx.MustExec("INSERT INTO user (username, steamid) VALUES (?, ?)", username, strings.ToLower(string(steam_id)))
+	return tx.Commit()
 }
 
-func GetSteamID(username string) (SteamID, error) {
-	var steam_id []byte
-	err := db.View(func(tx *bolt.Tx) error {
-		steam_id = tx.Bucket([]byte(DB_STEAM_ID)).Get([]byte(strings.ToLower(username)))
-		if steam_id == nil {
-			return errors.New("Unknown steam id")
-		}
-		return nil
-	})
-	return SteamID(steam_id), err
+func GetSteamID(username string) SteamID {
+	var steamid string
+	row := SqlDB.QueryRow("SELECT steamid FROM user WHERE username = ? LIMIT 1", strings.ToLower(username))
+	row.Scan(&steamid)
+	return SteamID(steamid)
 }
 
 func decodePlayerSummary(resp_body []byte, player_sum *ApiPlayerSumResponse) error {
@@ -136,7 +128,6 @@ func GetPlayerInfo(api_key string, steam_id SteamID) (*PlayerInfo, error) {
 	if err != nil {
 		return &player_info, err
 	}
-
 	if len(info_response.Response.Players) != 1 {
 		return &player_info, errors.New("Invalid player count returned.")
 	} else {
